@@ -67,7 +67,12 @@ resource "random_string" "externalid" {
 resource "env0_aws_credentials" "credentials" {
   name        = var.assume_role_name
   arn         = aws_iam_role.env0_deployer_role.arn
-  external_id = random_string.externalid.result
+  external_id = "${ssm:nameofsecret}"
+}
+
+resource "aws_secrets_manager" "myexternalid" {
+  name = "nameofsecret"
+  secret = random_string.externalid.result
 }
 
 output "externalid" {
